@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 967710702}
   - component: {fileID: 967710701}
   - component: {fileID: 967710700}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -469,6 +469,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55f8f3fe7675aaf4ebbd689a4b79f625, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveDirection: {x: 0, y: 0}
-  rb: {fileID: 1733481616}
-  moveSpeed: 50
+  _moveSpeed: 300
+  _jumpHeight: 7
+  boxSize: {x: 0.83, y: 0.17, z: 0}
+  maxDistance: 0.57
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 8
