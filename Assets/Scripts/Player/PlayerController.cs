@@ -8,8 +8,9 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     #region Stats
-    [SerializeField] private float _moveSpeed = 5f;
-    [SerializeField] private int _jumpHeight = 5;
+    [field: Header("Stats")]
+    [field: SerializeField] public float _moveSpeed { get; private set; } = 5f;
+    [field: SerializeField] public int _jumpHeight { get; private set; } = 5;
     #endregion
 
     #region Components & Movement stuff
@@ -18,37 +19,41 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Grounded Check
-    public Vector3 boxSize;
-    public float maxDistance;
-    public LayerMask layerMask;
+    private Vector3 _boxSize;
+    private float _maxDistance;
+    [Header("Ground Layer Mask")][SerializeField] private LayerMask _layerMask;
     #endregion
 
     #region InputActions & Player Controls
-    public PlayerControls PlayerControls;
+    private PlayerControls _playerControls;
     private InputAction _move;
     private InputAction _attack;
     private InputAction _jump;
     #endregion
 
-    private bool _jumped = false;
+    #region Buffs
+    [SerializeField] private Buff _damageBuff;
+
+    private List<Buff> _buffs = new List<Buff>();
+    #endregion
 
     private void Awake()
     {
-        PlayerControls = new PlayerControls();
+        _playerControls = new PlayerControls();
     }
 
     private void OnEnable()
     {
-        _move = PlayerControls.Player.Move;
+        _move = _playerControls.Player.Move;
         _move.performed += StartMove;
         _move.canceled += StopMove;
         _move.Enable();
 
-        _attack = PlayerControls.Player.Attack;
+        _attack = _playerControls.Player.Attack;
         _attack.Enable();
         _attack.performed += Attack;
 
-        _jump = PlayerControls.Player.Jump;
+        _jump = _playerControls.Player.Jump;
         _jump.Enable();
         _jump.performed += Jump;
     }
@@ -63,6 +68,9 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
+
+        
+        
     }
 
     // Update is called once per frame
@@ -77,7 +85,7 @@ public class PlayerController : MonoBehaviour
 
     private void Attack(InputAction.CallbackContext context)
     {
-        Debug.Log("We attacked");
+        PlayerCombat.main.Attack();
     }
 
     private void Jump(InputAction.CallbackContext context)
@@ -88,15 +96,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
+    private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawCube(transform.position - transform.up * maxDistance, boxSize);
+        Gizmos.DrawCube(transform.position - transform.up * _maxDistance, _boxSize);
     }
 
     private bool GroundCheck()
     {
-        return (Physics2D.BoxCast(transform.position, boxSize, 0, -transform.up, maxDistance, layerMask));
+        return (Physics2D.BoxCast(transform.position, _boxSize, 0, -transform.up, _maxDistance, _layerMask));
     }
 
     private void StartMove(InputAction.CallbackContext context)
@@ -124,5 +132,10 @@ public class PlayerController : MonoBehaviour
            
             yield return new WaitForFixedUpdate();
         }
+    }
+
+    private void AddAllBuffs()
+    {
+        //_bfs.Add()
     }
 }
